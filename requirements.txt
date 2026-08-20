@@ -1,0 +1,21 @@
+# Dependencias minimas verificadas para rodar o MoneyPrinterTurbo headless.
+# Espelham o requirements.txt do MPT, sem streamlit/whisper/azure/litellm,
+# que so servem para a interface web e para provedores que nao usamos.
+# 'toml' e importado por app/config/config.py e nao aparece no requirements
+# do MPT (la ele entra de carona com o streamlit). Sem ele nada roda.
+moviepy==2.2.1
+edge_tts==7.2.7
+loguru==0.7.3
+openai==2.24.0
+requests==2.33.1
+pyyaml==6.0.3
+pydub==0.25.1
+socksio==1.0.0
+google-genai==2.11.0
+python-multipart==0.0.27
+fastapi==0.136.3
+uvicorn==0.32.1
+toml==0.10.2
+packaging==24.2
+google-auth-oauthlib
+google-api-python-client
