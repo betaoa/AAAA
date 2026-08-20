@@ -1,0 +1,141 @@
+name: videobot
+
+# Tres execucoes por dia, nas janelas de maior movimento.
+# O cron do GitHub roda em UTC. Cuiaba e UTC-4.
+#   12:00 Cuiaba = 16:00 UTC
+#   19:00 Cuiaba = 23:00 UTC
+#   21:00 Cuiaba = 01:00 UTC (dia seguinte)
+# O GitHub pode atrasar o disparo em ate ~15 min quando esta cheio. Normal.
+
+on:
+  schedule:
+    - cron: "0 16 * * *"
+    - cron: "0 23 * * *"
+    - cron: "0 1 * * *"
+  workflow_dispatch:       # permite disparar na mao pelo site
+    inputs:
+      teste:
+        description: "Gerar sem postar"
+        type: boolean
+        default: false
+
+# Precisa escrever de volta o usados.txt
+permissions:
+  contents: write
+
+concurrency:
+  group: videobot
+  cancel-in-progress: false
+
+jobs:
+  gerar-e-postar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg imagemagick
+
+      - name: Preparar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Baixar o MoneyPrinterTurbo
+        run: |
+          git clone --depth 1 https://github.com/harry0703/MoneyPrinterTurbo.git
+          cd MoneyPrinterTurbo
+          cp config.example.toml config.toml
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install -q --upgrade pip wheel
+          pip install -q \
+            "moviepy==2.2.1" "edge_tts==7.2.7" "loguru==0.7.3" \
+            "openai==2.24.0" "requests==2.33.1" "pyyaml==6.0.3" \
+            "pydub==0.25.1" "socksio==1.0.0" "google-genai==2.11.0" \
+            "python-multipart==0.0.27" "fastapi==0.136.3" "uvicorn==0.32.1" \
+            google-auth-oauthlib google-api-python-client
+
+      - name: Montar a configuracao
+        env:
+          PEXELS_KEY: ${{ secrets.PEXELS_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+        run: |
+          python - <<'PY'
+          import os, re
+          p = "MoneyPrinterTurbo/config.toml"
+          s = open(p, encoding="utf-8").read()
+
+          def setar(chave, valor, s):
+              padrao = rf'^{re.escape(chave)}\s*=.*$'
+              novo = f'{chave} = {valor}'
+              if re.search(padrao, s, flags=re.M):
+                  return re.sub(padrao, novo, s, count=1, flags=re.M)
+              return s + f"\n{novo}\n"
+
+          s = setar("video_source", '"pexels"', s)
+          s = setar("subtitle_provider", '"edge"', s)
+
+          pex = os.environ.get("PEXELS_KEY", "")
+          gem = os.environ.get("GEMINI_KEY", "")
+          if pex:
+              s = setar("pexels_api_keys", f'["{pex}"]', s)
+          else:
+              raise SystemExit("Falta o secret PEXELS_KEY")
+          if gem:
+              s = setar("llm_provider", '"gemini"', s)
+              s = setar("gemini_api_key", f'"{gem}"', s)
+          else:
+              raise SystemExit("Falta o secret GEMINI_KEY")
+
+          open(p, "w", encoding="utf-8").write(s)
+          print("config.toml pronto")
+          PY
+
+      - name: Restaurar o token do YouTube
+        if: ${{ secrets.YOUTUBE_TOKEN != '' }}
+        env:
+          YOUTUBE_TOKEN: ${{ secrets.YOUTUBE_TOKEN }}
+        run: |
+          printf '%s' "$YOUTUBE_TOKEN" > youtube_token.json
+          python -c "import json;json.load(open('youtube_token.json'));print('token ok')"
+
+      - name: Gerar e postar
+        env:
+          SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+          REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+        run: |
+          if [ "${{ inputs.teste }}" = "true" ]; then
+            python rodar.py --teste
+          else
+            python rodar.py
+          fi
+
+      - name: Guardar o video como artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ github.run_number }}
+          path: MoneyPrinterTurbo/storage/tasks/*/final-1*.mp4
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Registrar o tema usado
+        if: success()
+        run: |
+          git config user.name  "videobot"
+          git config user.email "videobot@users.noreply.github.com"
+          git add usados.txt historico.jsonl 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "videobot: tema usado em $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "nada mudou"
+          fi

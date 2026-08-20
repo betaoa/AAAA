@@ -1,0 +1,49 @@
+# nicho|tema|termos de busca no Pexels (em ingles, o acervo em portugues e pobre)
+# ---------------------------------------------------------------- MAR
+mar|O que existe no ponto mais fundo do oceano|deep sea,underwater ocean,submarine,dark water,bioluminescence
+mar|Por que quase todo o fundo do mar continua sem mapa|ocean waves,sonar ship,deep sea,research vessel,marine science
+mar|As criaturas que produzem a propria luz no escuro do oceano|bioluminescence,jellyfish,deep sea,glowing water,night ocean
+mar|O que aconteceu com as cidades que o mar engoliu|ancient ruins,underwater ruins,ocean waves,diver exploring,stone columns
+mar|Por que o mar fica azul se a agua e transparente|ocean surface,blue water,sunlight underwater,waves,sea horizon
+mar|A maior migracao de animais do planeta acontece todo dia no oceano|fish school,plankton,underwater,ocean current,marine life
+mar|O barulho que os navios fazem esta ensurdecendo as baleias|whale,cargo ship,ocean,underwater,sea waves
+mar|Quanto plastico realmente existe no meio do Atlantico|plastic pollution ocean,beach trash,sea waves,marine debris,cleanup
+mar|Por que existem rios dentro do fundo do mar|underwater cave,deep sea,ocean floor,diver,salt water
+mar|As tempestades que so acontecem no fundo do oceano|storm sea,underwater current,deep ocean,dark water,waves crashing
+mar|O que os corais fazem quando a agua esquenta demais|coral reef,bleached coral,tropical fish,underwater,ocean
+mar|Como um polvo resolve problema sem ter um cerebro so|octopus,underwater,marine life,coral reef,tentacles
+mar|O animal mais antigo do planeta vive no fundo do mar|deep sea,jellyfish,ancient ocean,marine life,underwater
+mar|Por que quase nenhum submarino desce ate o fundo de verdade|submarine,deep sea vehicle,ocean research,underwater,pressure
+mar|O som misterioso que o oceano gravou e ninguem explicou|sonar,ocean waves,underwater microphone,dark sea,research ship
+# ------------------------------------------------------------ DINHEIRO
+dinheiro|Existe dinheiro esquecido no seu nome e voce nao sabe|brazilian money,cash bills,mobile banking,smartphone payment,wallet
+dinheiro|Por que quem ganha mais continua sem sobrar dinheiro|money counting,office worker,shopping,credit card,calculator
+dinheiro|O golpe do Pix que volta a circular todo ano|smartphone payment,mobile banking,cash,scam alert,phone screen
+dinheiro|A conta que mostra por que juros compostos assustam|calculator finance,coins stack,growth chart,money,investment
+dinheiro|Quanto custa de verdade parcelar sem juros|credit card,shopping,receipt,calculator,store payment
+dinheiro|Por que o cheque especial e a divida mais cara que existe|bank,credit card,money worry,calculator,documents
+dinheiro|O erro de investimento que quase todo iniciante comete|stock market,trading screen,charts,money,laptop finance
+dinheiro|Como a inflacao come o dinheiro parado na conta|supermarket,grocery prices,money,shopping cart,cash
+dinheiro|Reserva de emergencia: quanto realmente precisa ter|piggy bank,savings,money,calculator,home finance
+dinheiro|O que muda no seu bolso com o split payment|smartphone payment,store checkout,receipt,cash register,shopping
+dinheiro|Por que renda extra nao resolve quem nao controla gasto|notebook budget,calculator,receipts,money,desk
+dinheiro|Score de credito: o que realmente pesa|credit card,laptop screen,bank documents,money,office
+dinheiro|Quanto rende cem reais em cada aplicacao conhecida|coins stack,calculator,charts,money,investment
+dinheiro|O custo invisivel de manter dinheiro na poupanca|piggy bank,savings,money,bank,coins
+dinheiro|Como identificar uma pirâmide financeira antes de entrar|money,handshake business,charts falling,laptop,warning
+# ---------------------------------------------------------- ESPIRITUAL
+espiritual|Por que quase toda cultura antiga tem a mesma historia de diluvio|ancient ruins,flood water,storm rain,old book,stone temple
+espiritual|O que os antigos viam no ceu antes de existir astronomia|starry night sky,milky way,telescope,ancient ruins,candle
+espiritual|Por que o numero sete aparece em quase toda religiao|old book pages,candle light,church interior,stone carving,temple
+espiritual|A origem real do costume de bater na madeira|old wood,forest trees,candle,antique table,hands
+espiritual|Por que tantas culturas enterram os mortos olhando para o leste|sunrise,cemetery,ancient ruins,stone,desert horizon
+espiritual|O que a arqueologia achou nos templos mais antigos do mundo|ancient ruins,stone temple,excavation,desert,carved stone
+espiritual|Por que o cerebro humano procura sentido em coincidencia|night sky,candle flame,thinking person,fog,abstract light
+espiritual|A historia por tras dos amuletos de protecao|amulet,candle,old objects,market stall,hands holding
+espiritual|Por que quase todo povo antigo temia o eclipse|solar eclipse,dark sky,ancient ruins,fire,stone circle
+espiritual|O que os sonhos significavam nas civilizacoes antigas|night sky,sleeping,candle,old book,fog forest
+espiritual|Por que existem piramides em continentes que nunca se falaram|pyramid,ancient ruins,desert,stone structure,aerial ruins
+espiritual|A verdadeira origem das cartas de tarot|tarot cards,candle light,old table,hands,mystic
+espiritual|Por que o silencio virou pratica em quase toda tradicao|meditation,monastery,candle,mountain fog,empty room
+espiritual|O que muda no corpo de quem medita todo dia|meditation,calm person,sunrise,nature,breathing
+espiritual|Por que tantas culturas contam a mesma historia de gigantes|ancient ruins,stone statue,mountains,old book,desert
