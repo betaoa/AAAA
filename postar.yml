@@ -1,0 +1,177 @@
+name: videobot
+
+# Quatro execucoes por dia. O cron do GitHub roda em UTC, Cuiaba e UTC-4.
+#   09:05 Cuiaba = 13:05 UTC
+#   12:07 Cuiaba = 16:07 UTC
+#   14:05 Cuiaba = 18:05 UTC
+#   20:35 Cuiaba = 00:35 UTC (dia seguinte)
+# Os minutos sao quebrados de proposito: todo mundo agenda no minuto
+# zero, e e ali que a fila do GitHub mais atrasa.
+# Mesmo assim o disparo pode atrasar ~15 min quando a fila esta cheia.
+# Cada execucao leva ~14 min, entao o video sai ~15 min depois do horario.
+
+on:
+  schedule:
+    - cron: "5 13 * * *"
+    - cron: "7 16 * * *"
+    - cron: "5 18 * * *"
+    - cron: "35 0 * * *"
+  workflow_dispatch:
+    inputs:
+      teste:
+        description: "Gerar sem postar"
+        type: boolean
+        default: false
+
+# Precisa escrever de volta usados.txt e historico.jsonl
+permissions:
+  contents: write
+
+concurrency:
+  group: videobot
+  cancel-in-progress: false
+
+jobs:
+  gerar-e-postar:
+    runs-on: ubuntu-latest
+    # Teto de custo: um job travado em 60 min queima 3% da cota mensal.
+    timeout-minutes: 30
+
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Preparar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Baixar o MoneyPrinterTurbo
+        run: |
+          git clone --depth 1 https://github.com/harry0703/MoneyPrinterTurbo.git
+          cp MoneyPrinterTurbo/config.example.toml MoneyPrinterTurbo/config.toml
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install -q --upgrade pip wheel
+          pip install -q -r requirements.txt
+
+      - name: Montar a configuracao
+        env:
+          PEXELS_KEY: ${{ secrets.PEXELS_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: |
+          python - <<'PY'
+          import os, re, sys
+
+          p = "MoneyPrinterTurbo/config.toml"
+          s = open(p, encoding="utf-8").read()
+
+          def setar(chave, valor, s):
+              # So substitui chave que ja existe no [app]. Se o MPT renomear
+              # a chave, falha alto em vez de escrever num lugar que ninguem le.
+              padrao = rf'^{re.escape(chave)}\s*=.*$'
+              if not re.search(padrao, s, flags=re.M):
+                  sys.exit(f"chave '{chave}' sumiu do config.example.toml do MPT")
+              return re.sub(padrao, f'{chave} = {valor}', s, count=1, flags=re.M)
+
+          pex = os.environ.get("PEXELS_KEY", "")
+          gem = os.environ.get("GEMINI_KEY", "")
+          if not pex:
+              sys.exit("Falta o secret PEXELS_KEY")
+          if not gem:
+              sys.exit("Falta o secret GEMINI_KEY")
+
+          # Modelo do Gemini. O padrao do MPT e um 'pro-preview', que costuma
+          # ficar fora da cota gratuita. Trocavel na aba Variables do repo.
+          modelo = os.environ.get("GEMINI_MODEL") or "gemini-flash-latest"
+
+          s = setar("video_source", '"pexels"', s)
+          s = setar("subtitle_provider", '"edge"', s)
+          s = setar("pexels_api_keys", f'["{pex}"]', s)
+          s = setar("llm_provider", '"gemini"', s)
+          s = setar("gemini_api_key", f'"{gem}"', s)
+          s = setar("gemini_model_name", f'"{modelo}"', s)
+
+          open(p, "w", encoding="utf-8").write(s)
+          print(f"config.toml pronto, modelo={modelo}")
+          PY
+
+      - name: Restaurar o token do YouTube
+        env:
+          YOUTUBE_TOKEN: ${{ secrets.YOUTUBE_TOKEN }}
+          TESTE: ${{ github.event.inputs.teste }}
+        run: |
+          # O contexto 'secrets' nao pode ser usado em 'if:' de passo.
+          # Por isso o teste e feito aqui dentro, no shell.
+          if [ -z "$YOUTUBE_TOKEN" ]; then
+            echo "Sem YOUTUBE_TOKEN. Vai gerar o video e nao postar."
+            exit 0
+          fi
+          printf '%s' "$YOUTUBE_TOKEN" > youtube_token.json
+          if python -c "import json,sys; d=json.load(open('youtube_token.json')); sys.exit(0 if d.get('refresh_token') else 1)" 2>/dev/null; then
+            echo "token ok"
+            exit 0
+          fi
+          rm -f youtube_token.json
+          echo "::error::O secret YOUTUBE_TOKEN nao contem um JSON valido com refresh_token."
+          echo "Corrija colando o CONTEUDO INTEIRO do arquivo youtube_token.json,"
+          echo "do primeiro { ate o ultimo }, sem aspas em volta e sem quebrar linhas."
+          if [ "$TESTE" = "true" ]; then
+            echo "Modo teste: seguindo assim mesmo, o video sera gerado e nao postado."
+            exit 0
+          fi
+          exit 1
+
+      - name: Gerar e postar
+        env:
+          TESTE: ${{ github.event.inputs.teste }}
+          # temas_auto.py usa estas duas para renovar a pauta antes de gerar
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+          REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+        run: |
+          if [ "$TESTE" = "true" ]; then
+            python rodar.py --teste
+          else
+            python rodar.py
+          fi
+
+      # So no teste. Artefato conta contra os 500 MB de armazenamento gratis,
+      # e 3 videos por dia guardados sete dias estouram isso.
+      - name: Guardar o video como artefato
+        if: ${{ always() && github.event.inputs.teste == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ github.run_number }}
+          path: MoneyPrinterTurbo/storage/tasks/*/final-1*.mp4
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Registrar o tema usado
+        if: success()
+        run: |
+          git config user.name "videobot"
+          git config user.email "videobot@users.noreply.github.com"
+          git add usados.txt historico.jsonl temas.txt 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "nada mudou"
+            exit 0
+          fi
+          git commit -m "videobot: pauta e tema usado em $(date -u +%Y-%m-%d)"
+          # Se outra execucao empurrou algo no meio, rebaseia e tenta de novo.
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase --autostash
+          done
+          exit 1

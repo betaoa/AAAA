@@ -32,6 +32,35 @@ TEMAS = os.path.join(BASE, "temas.txt")
 USADOS = os.path.join(BASE, "usados.txt")
 HISTORICO = os.path.join(BASE, "historico.jsonl")
 
+# ------------------------------------------------------------- narracao
+# Vai como "--video-script-prompt": o MoneyPrinterTurbo anexa isto ao
+# prompt padrao dele, sem substituir as regras de formato. Trocar o
+# system prompt inteiro quebraria o parsing da resposta.
+ESTILO_PADRAO = (
+    "Escreva como locutor de video curto, falando direto com quem assiste. "
+    "Primeira frase e o gancho: comece pelo fato mais surpreendente, nunca "
+    "por apresentacao. Depois explique o porque, em ordem, uma ideia por "
+    "frase. Frases curtas. Nada de 'voce sabia', 'neste video' ou "
+    "'inscreva-se'. Termine com a informacao mais forte, sem pedir nada."
+)
+
+ESTILOS = {
+    "dorama": (
+        "Escreva como locutor que resume e explica, no tom de quem esta "
+        "contando a historia para alguem que nunca viu. Apresente o "
+        "conflito, explique por que aquilo funciona com o publico, e "
+        "entregue o detalhe de bastidor no fim. Nao invente nome de ator, "
+        "de personagem, de titulo nem numero de audiencia: se nao souber "
+        "com certeza, fale do padrao e do formato, nunca de uma obra "
+        "especifica."
+    ),
+    "anime": (
+        "Escreva como locutor que explica, sem jargao de fa. Assuma que "
+        "quem assiste nao acompanha anime. Nao invente nome de estudio, "
+        "de obra ou de data: se nao tiver certeza, fale do padrao."
+    ),
+}
+
 TESTE = "--teste" in sys.argv
 VOZ = "pt-BR-ThalitaMultilingualNeural-Female"
 RITMO = "1.18"
@@ -78,7 +107,7 @@ def marcar_usado(tema):
 
 
 # --------------------------------------------------------------------- geracao
-def gerar(tema, termos):
+def gerar(tema, termos, estilo=""):
     task_id = str(uuid.uuid4())
     cmd = [
         VENV_PY, "cli.py",
@@ -98,6 +127,7 @@ def gerar(tema, termos):
         "--video-transition-mode", "fade-in",
         "--video-clip-duration", "5",
         "--paragraph-number", "4",
+        "--video-script-prompt", (estilo or ESTILO_PADRAO),
         "--n-threads", str(max(2, os.cpu_count() or 2)),
         "--task-id", task_id,
     ]
@@ -201,16 +231,37 @@ def postar_tiktok(caminho):
 
 
 # ------------------------------------------------------------------------ main
+def atualizar_temas():
+    """Busca tema novo em cima do que esta em alta. Nunca derruba a execucao:
+    se falhar, o temas.txt que ja esta no repositorio continua valendo."""
+    try:
+        import temas_auto
+        temas_auto.atualizar()
+    except Exception as e:
+        log(f"atualizacao de temas falhou ({type(e).__name__}: {e}). "
+            f"Seguindo com a lista atual.")
+
+
 def main():
     log("=" * 55)
+    atualizar_temas()
     linha = proximo_tema()
     partes = [p.strip() for p in linha.split("|")]
     nicho, tema, termos = (partes + ["", "", ""])[:3]
     tags = {"mar": "oceano,ciencia,curiosidades",
             "dinheiro": "financas,dinheiro,economia",
-            "espiritual": "misterio,historia,curiosidades"}.get(nicho, "curiosidades")
+            "espiritual": "misterio,historia,curiosidades",
+            "anime": "anime,otaku,curiosidades",
+            "dorama": "dorama,novela chinesa,cdrama",
+            "tecnologia": "tecnologia,ciencia,curiosidades",
+            "historia": "historia,curiosidades,cultura",
+            "espaco": "espaco,astronomia,ciencia",
+            "corpo humano": "corpo humano,saude,ciencia",
+            "misterio": "misterio,curiosidades,enigma",
+            }.get(nicho, f"{nicho},curiosidades,shorts" if nicho else "curiosidades")
 
-    caminho, roteiro = gerar(tema, termos)
+    estilo = ESTILOS.get(nicho, ESTILO_PADRAO)
+    caminho, roteiro = gerar(tema, termos, estilo)
     if not caminho:
         sys.exit(1)
 

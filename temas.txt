@@ -47,3 +47,35 @@ espiritual|A verdadeira origem das cartas de tarot|tarot cards,candle light,old 
 espiritual|Por que o silencio virou pratica em quase toda tradicao|meditation,monastery,candle,mountain fog,empty room
 espiritual|O que muda no corpo de quem medita todo dia|meditation,calm person,sunrise,nature,breathing
 espiritual|Por que tantas culturas contam a mesma historia de gigantes|ancient ruins,stone statue,mountains,old book,desert
+# ---------------------------------------------------------------- ANIME
+anime|Por que os olhos em anime sao desenhados tao grandes|anime drawing,japanese animation,art studio,sketch pencil,illustration
+anime|O truque de animacao que economiza milhares de desenhos por episodio|animation studio,storyboard,drawing table,japanese art,pencil sketch
+anime|Por que quase todo anime tem uma cena comendo lamen|ramen bowl,japanese food,noodle soup,street food japan,steam food
+anime|A cidade real que virou cenario de dezenas de animes|tokyo street,japan alley,neon signs,city night japan,shibuya
+anime|Por que o ceu dos animes parece mais bonito que o de verdade|blue sky clouds,sunset sky,cloudscape,summer sky,horizon
+anime|O som de espada que todo anime usa e sempre o mesmo|katana sword,japanese blade,samurai,metal sound,dojo
+anime|Quanto tempo leva para desenhar um unico segundo de anime|animation frames,drawing hand,art desk,sketchbook,illustration work
+anime|Por que os personagens gritam o nome do golpe antes de usar|martial arts,fight training,dojo practice,energy light,action pose
+anime|O motivo de tantos animes acontecerem em escola|japanese school,classroom,students uniform,school hallway,desk chair
+anime|Por que a chuva em anime e desenhada com tanto cuidado|rain window,rainy street,water drops,umbrella rain,wet pavement
+anime|O ator que faz a voz de dezenas de personagens diferentes|recording studio,microphone booth,voice actor,sound mixer,headphones
+anime|Por que o Japao produz mais anime no inverno|snow japan,winter street,cold city,snowfall,frozen window
+anime|A tecnica de camera que o anime copiou do cinema antigo|film camera,old projector,cinema reel,movie set,vintage lens
+anime|Por que os cabelos coloridos existem em anime|colorful paint,hair salon,color palette,art supplies,paint mixing
+anime|O detalhe de comida em anime que leva mais tempo que o rosto|japanese food,bento box,cooking closeup,fresh ingredients,food art
+# --------------------------------------------------------------- DORAMA
+dorama|Por que as novelas chinesas curtas viciam tanto em poucos minutos|phone scrolling,watching phone,city night asia,neon street,close up eyes
+dorama|O formato de novela de 90 segundos que engoliu o TikTok na China|vertical video,phone screen,filming set,camera crew,smartphone closeup
+dorama|Quanto tempo leva para gravar uma novela chinesa curta inteira|film set,camera crew,studio lights,clapperboard,production crew
+dorama|Por que quase toda novela chinesa comeca com uma humilhacao|rain street,sad woman,city crowd,alone walking,dramatic sky
+dorama|O ator que grava tres novelas ao mesmo tempo na China|actor set,film crew,makeup artist,studio lighting,busy set
+dorama|Por que os figurinos de epoca chineses levam meses para ficar prontos|silk fabric,traditional costume,embroidery hands,sewing detail,textile art
+dorama|A cidade cenografica onde quase toda novela chinesa e gravada|chinese architecture,traditional village,temple roof,old town china,stone bridge
+dorama|Por que novela chinesa quase sempre tem gemeo ou identidade trocada|mirror reflection,two faces,masquerade mask,shadow person,double exposure
+dorama|O motivo de tanta cena de chuva em novela asiatica|rain umbrella,wet street night,rain window,storm city,puddle reflection
+dorama|Por que a trilha sonora de novela chinesa usa instrumentos antigos|chinese instrument,guzheng,traditional music,strings closeup,concert hall
+dorama|Como uma novela chinesa vira sucesso mundial sem passar na TV|streaming screen,laptop watching,subtitles screen,phone night,global map
+dorama|O truque de camera que faz novela barata parecer cara|camera slider,film lens,studio light,cinematography,dolly shot
+dorama|Por que os episodios terminam sempre no pior momento possivel|clock ticking,suspense dark,door closing,phone ringing,shocked face
+dorama|A regra de censura que muda o final das novelas na China|film editing,editing room,scissors film,screen monitor,control room
+dorama|Por que chines antigo aparece tanto em novela de fantasia|chinese temple,misty mountain,traditional robe,ancient scroll,bamboo forest

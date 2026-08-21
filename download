@@ -1,0 +1,7 @@
+storage/
+__pycache__/
+*.pyc
+youtube_token.json
+client_secret.json
+tiktok_tokens.json
+MoneyPrinterTurbo/
