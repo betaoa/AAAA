@@ -34,6 +34,8 @@ Ou seja: no plano gratuito com repositório privado, **4 por dia é o teto**. Pa
 
 **Hibernação.** Agendamento é desligado após 60 dias sem atividade no repositório. O workflow faz um commit a cada execução, então ele se mantém vivo sozinho.
 
+> **Nota:** este repositório é **público**. Em repositório público os minutos do Actions são ilimitados, então a tabela de minutos acima só volta a valer se ele for fechado de novo. O que muda: código e logs das execuções ficam visíveis para qualquer um. Os secrets continuam escondidos — o GitHub mascara os valores no log, e este workflow só dispara por agendamento ou na mão, nunca por pull request de fork, que é o caminho pelo qual repositório público costuma vazar segredo.
+
 ## Passo a passo
 
 **1. Subir os arquivos**
