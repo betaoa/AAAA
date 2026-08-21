@@ -15,7 +15,16 @@ Além disso: o artefato de vídeo agora só é guardado no modo teste (3 vídeos
 
 ## Ressalvas honestas
 
-**Minutos.** Repositório privado tem 2.000 minutos grátis por mês. Cada execução gasta ~2 min de preparo (ffmpeg, clone, dependências com cache) mais o render. Se o render for de 8 min, são ~10 min por execução, ~900/mês. Se for de 15, são ~1.550/mês. Cabe nos dois casos, mas sem folga larga. Confira o gasto real em *Settings → Billing* depois da primeira semana. Se apertar: apague uma linha de `cron`.
+**Minutos — número medido, não estimativa.** A primeira execução completa levou **13m55s**: ~1 min de preparo (37s de ffmpeg, 16s de dependências, 5s de clone) e ~13 min de render. O GitHub cobra por minuto iniciado, então conte 14.
+
+| Vídeos por dia | Minutos/mês | Cabe nos 2.000? |
+|---|---|---|
+| 2 | 840 | sim, folgado |
+| 3 | 1.260 | sim, 37% de folga |
+| 4 | 1.680 | sim, no limite |
+| 5 | 2.100 | **não** |
+
+Ou seja: no plano gratuito com repositório privado, **4 por dia é o teto**. Para passar disso, o repositório precisa virar público (minutos ilimitados, código à vista, secrets continuam escondidos). Confira o gasto real em *Settings → Billing* depois da primeira semana.
 
 **Cota do YouTube.** 10.000 unidades por dia, cada upload custa 1.600. Teto real: 6 vídeos por dia. Três cabem. Dez não cabem.
 
