@@ -107,8 +107,12 @@ def gerar(tema, termos):
     env["REQUESTS_CA_BUNDLE"] = "/etc/ssl/certs/ca-certificates.crt"
 
     log(f"Gerando: {tema}")
-    r = subprocess.run(cmd, cwd=REPO, env=env, capture_output=True,
-                       text=True, timeout=60 * 45)
+    try:
+        r = subprocess.run(cmd, cwd=REPO, env=env, capture_output=True,
+                           text=True, timeout=60 * 20)
+    except subprocess.TimeoutExpired:
+        log("FALHOU: a geracao passou de 20 min e foi cortada.")
+        return None, None
 
     saida = os.path.join(REPO, "storage", "tasks", task_id, "final-1.mp4")
     if r.returncode != 0 or not os.path.exists(saida):
@@ -117,7 +121,9 @@ def gerar(tema, termos):
         log("FALHOU na geracao.")
         for l in (erros or tudo.splitlines())[-5:]:
             log("   " + re.sub(r"\x1b\[[0-9;]*m", "", l)[:260])
-        if "api_key" in tudo or "401" in tudo:
+        baixo = tudo.lower()
+        if ("api key" in baixo or "api_key" in baixo or "401" in baixo
+                or "invalid_argument" in baixo or "permission_denied" in baixo):
             log("   >> parece falta de chave de LLM. Pegue uma gratis em")
             log("      aistudio.google.com/apikey e ponha gemini_api_key no config.toml")
         return None, None
