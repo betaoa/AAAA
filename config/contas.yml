@@ -1,0 +1,37 @@
+# Nomes de marca preparados para criar as contas nas tres redes.
+# O identificador depende de disponibilidade; tente os sufixos na ordem.
+padroes:
+  sufixos_reserva: [br, oficial, tv]
+
+contas:
+  memes: {nome: "Beto Memes", handle: betomemesoficial}
+  exercicios-academia: {nome: "Beto Academia", handle: betoacademia}
+  animais-selvagens: {nome: "Beto Animais", handle: betoanimais}
+  pica-pau: {nome: "Beto Pica-Pau", handle: betopicapau}
+  asmr: {nome: "Beto ASMR", handle: betoasmr}
+  desenhos-biblicos: {nome: "Beto Bíblico", handle: betobiblico}
+  religiosos: {nome: "Beto Fé", handle: betofeoficial}
+  aviacao: {nome: "Beto Aviação", handle: betoaviacao}
+  virais-gringos: {nome: "Beto Virais", handle: betovirais}
+  ganchos-virais: {nome: "Beto Ganchos", handle: betoganchos}
+  ruyter: {nome: "Beto Ruyter", handle: betoruyter}
+  simpsons: {nome: "Beto Simpsons", handle: betosimpsons}
+  animes: {nome: "Beto Animes", handle: betoanimes}
+  filmes-series: {nome: "Beto Filmes", handle: betofilmes}
+  lifestyle-milionario: {nome: "Beto Lifestyle", handle: betolifestyle}
+  rick-morty: {nome: "Beto Rick e Morty", handle: betorickmorty}
+  family-guy: {nome: "Beto Family Guy", handle: betofamilyguy}
+  motivacionais: {nome: "Beto Motivação", handle: betomotivacao}
+  marcal: {nome: "Beto Marçal", handle: betomarcal}
+  minimalistas: {nome: "Beto Minimalismo", handle: betominimalismo}
+  todo-mundo-odeia-o-chris: {nome: "Beto Chris", handle: betochris}
+  futebol: {nome: "Beto Futebol", handle: betofutebol}
+  travel-vibes: {nome: "Beto Travel", handle: betotravel}
+  podcast: {nome: "Beto Podcast", handle: betopodcast}
+  acoes-policiais: {nome: "Beto Polícia", handle: betopolicia}
+  consertos-marcenaria: {nome: "Beto Marcenaria", handle: betomarcenaria}
+  ladroes-se-dando-mal: {nome: "Beto Ladrões", handle: betoladroes}
+  espinhas: {nome: "Beto Espinhas", handle: betoespinhas}
+  limpeza: {nome: "Beto Limpeza", handle: betolimpeza}
+  inteligencia-artificial: {nome: "Beto IA", handle: betoia}
+  carros-caminhoes: {nome: "Beto Carros", handle: betocarros}

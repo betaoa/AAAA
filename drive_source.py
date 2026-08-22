@@ -12,6 +12,7 @@ import json
 import random
 import re
 from dataclasses import dataclass
+from hashlib import sha256
 from pathlib import Path
 
 EXTENSOES = {".mp4", ".mov", ".mkv", ".webm", ".m4v"}
@@ -154,6 +155,20 @@ def listar_videos(url: str, credencial: str = "") -> tuple[list[ArquivoDrive], o
     return _listar_publico(url), None
 
 
+def _listar_local(raiz: str, nome_pasta: str) -> list[ArquivoDrive]:
+    pasta = Path(raiz).expanduser() / nome_pasta
+    if not pasta.is_dir():
+        return []
+    encontrados = []
+    for caminho in sorted(pasta.rglob("*")):
+        if not caminho.is_file() or caminho.suffix.lower() not in EXTENSOES:
+            continue
+        relativo = caminho.relative_to(pasta).as_posix()
+        arquivo_id = "local-" + sha256(relativo.encode("utf-8")).hexdigest()[:32]
+        encontrados.append(ArquivoDrive(arquivo_id, caminho.name, str(caminho)))
+    return encontrados
+
+
 def _nome_seguro(nome: str) -> str:
     base = re.sub(r"[<>:\"/\\|?*\x00-\x1f]", "_", nome).strip(" .")
     return base[:180] or "video.mp4"
@@ -195,8 +210,14 @@ def escolher_e_baixar(
     pasta_destino: Path,
     usados_path: Path,
     credencial: str = "",
+    sync_root: str = "",
+    folder_name: str = "",
 ) -> tuple[ArquivoDrive, Path]:
-    videos, servico = listar_videos(url, credencial)
+    videos = _listar_local(sync_root, folder_name) if sync_root and folder_name else []
+    servico = None
+    origem_local = bool(videos)
+    if not videos:
+        videos, servico = listar_videos(url, credencial)
     if not videos:
         raise ErroDrive("A pasta nao contem nenhum video compativel.")
     usados = set()
@@ -210,6 +231,8 @@ def escolher_e_baixar(
     if not disponiveis:
         disponiveis = videos
     escolhido = random.choice(disponiveis)
+    if origem_local:
+        return escolhido, Path(escolhido.caminho)
     return escolhido, baixar(escolhido, pasta_destino, servico)
 
 

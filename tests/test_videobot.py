@@ -3,6 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 import drive_source
 import videobot
 
@@ -64,6 +66,31 @@ class ConfigTests(unittest.TestCase):
     def test_extrai_id_de_pasta_drive(self):
         url = "https://drive.google.com/drive/folders/1AbC_def-123?usp=sharing"
         self.assertEqual(drive_source.extrair_id(url), "1AbC_def-123")
+
+    def test_prefere_pasta_sincronizada_sem_baixar(self):
+        with tempfile.TemporaryDirectory() as pasta:
+            raiz = Path(pasta)
+            fonte = raiz / "Limpeza" / "video 01.mp4"
+            fonte.parent.mkdir()
+            fonte.write_bytes(b"video-teste")
+            item, caminho = drive_source.escolher_e_baixar(
+                "https://drive.google.com/drive/folders/1AbC_def-123",
+                raiz / "downloads",
+                raiz / "usados.txt",
+                sync_root=str(raiz),
+                folder_name="Limpeza",
+            )
+        self.assertEqual(caminho, fonte)
+        self.assertTrue(item.id.startswith("local-"))
+
+    def test_plano_social_cobre_todos_os_perfis(self):
+        social = yaml.safe_load(
+            (videobot.BASE / "config" / "contas.yml").read_text(encoding="utf-8")
+        )["contas"]
+        canais = videobot.carregar_config().canais
+        self.assertEqual(set(social), {c.id for c in canais})
+        handles = [x["handle"] for x in social.values()]
+        self.assertEqual(len(handles), len(set(handles)))
 
 
 if __name__ == "__main__":

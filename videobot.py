@@ -276,6 +276,7 @@ def ambiente_do_canal(canal: Canal) -> dict[str, str]:
         "VIDEOBOT_DATA_DIR": str(DADOS),
         "VIDEOBOT_MODO": canal.modo,
         "DRIVE_URL": canal.drive_url,
+        "DRIVE_FOLDER_NAME": canal.nome,
     })
 
     # Uma unica autorizacao do Drive pode ler todas as pastas da central.

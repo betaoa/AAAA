@@ -35,6 +35,8 @@ CANAL = re.sub(r"[^a-z0-9_-]", "", os.environ.get("CANAL", "").lower())
 MODO = os.environ.get("VIDEOBOT_MODO", "gerar").strip().lower()
 DRIVE_URL = os.environ.get("DRIVE_URL", "").strip()
 DRIVE_CREDENTIALS_FILE = os.environ.get("DRIVE_CREDENTIALS_FILE", "").strip()
+DRIVE_SYNC_ROOT = os.environ.get("DRIVE_SYNC_ROOT", "").strip()
+DRIVE_FOLDER_NAME = os.environ.get("DRIVE_FOLDER_NAME", "").strip()
 
 # Nichos que ESTE canal usa. Vazio = todos.
 NICHOS_CANAL = [n.strip().lower()
@@ -452,6 +454,8 @@ def main():
                 Path(DOWNLOAD_DRIVE),
                 Path(DRIVE_USADOS),
                 DRIVE_CREDENTIALS_FILE,
+                DRIVE_SYNC_ROOT,
+                DRIVE_FOLDER_NAME,
             )
         except drive_source.ErroDrive as e:
             log(f"Drive falhou: {e}")

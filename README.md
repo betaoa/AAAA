@@ -23,7 +23,21 @@ conta correspondente forem cadastrados.
 As pastas duplicadas de Family Guy e do pacote sem identificação foram
 ignoradas no cadastro.
 
-## 1. Drive
+## 1. Drive: duas formas de leitura
+
+### Preferida no Windows: Google Drive para computador
+
+Espelhe `Vídeos por Nicho` no computador e informe a pasta em `.env`:
+
+```text
+DRIVE_SYNC_ROOT=G:\Meu Drive\Vídeos por Nicho
+```
+
+O bot entra automaticamente na subpasta com o mesmo nome do perfil e envia o
+MP4 dali. Nesse modo a central continua privada, nenhum token do Drive fica no
+GitHub e o vídeo não é baixado duas vezes.
+
+### Servidor, GitHub ou Termux
 
 Cada perfil aponta para sua pasta:
 
@@ -40,7 +54,8 @@ GitHub precisa de um Secret chamado `DRIVE_CREDENTIALS`, contendo o JSON de
 uma conta de serviço ou token OAuth com leitura do Drive. Compartilhar somente
 a pasta central com a conta de serviço dá acesso às subpastas por herança.
 
-O bot baixa somente o vídeo escolhido para aquele horário. Depois de ao menos
+Quando não existe pasta sincronizada, o bot baixa somente o vídeo escolhido
+para aquele horário. Depois de ao menos
 uma rede aceitar a postagem, salva o ID em:
 
 ```text
