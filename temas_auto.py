@@ -26,16 +26,20 @@ Rodar sozinho para testar:
     GEMINI_KEY=xxx YOUTUBE_API_KEY=yyy python3 temas_auto.py
 """
 
+import glob
 import json
 import os
 import re
-import sys
+import time
 import urllib.parse
 import urllib.request
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 TEMAS = os.path.join(BASE, "temas.txt")
 USADOS = os.path.join(BASE, "usados.txt")
+TRAVA = os.path.join(BASE, ".temas_auto.lock")
+MARCA_ATUALIZACAO = os.path.join(BASE, "dados", ".temas_atualizados")
+INTERVALO_HORAS = int(os.environ.get("TEMAS_INTERVALO_HORAS", "12"))
 
 MODELO = os.environ.get("GEMINI_MODEL") or "gemini-flash-latest"
 REGIOES = ["BR", "US"]
@@ -77,7 +81,13 @@ def _temas_atuais():
 
 
 def _usados():
-    return {l.strip() for l in _ler(USADOS) if l.strip()}
+    caminhos = [USADOS]
+    caminhos += glob.glob(os.path.join(BASE, "usados-*.txt"))
+    caminhos += glob.glob(os.path.join(BASE, "dados", "*", "usados.txt"))
+    todos = set()
+    for caminho in caminhos:
+        todos.update(l.strip() for l in _ler(caminho) if l.strip())
+    return todos
 
 
 # -------------------------------------------------------------- tendencia real
@@ -103,7 +113,7 @@ def tendencias_youtube(chave):
             novos = [i["snippet"]["title"] for i in dados.get("items", [])]
             titulos += novos
             log(f"{regiao}: {len(novos)} titulos em alta")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - erro de rede/API preserva a pauta
             log(f"{regiao}: falhou ({type(e).__name__}: {e})")
     return titulos
 
@@ -184,7 +194,7 @@ def pedir_ao_gemini(chave, titulos, usados, quantos):
                 log(f"Gemini respondeu {rotulo}")
                 return texto.splitlines()
             log(f"Gemini devolveu vazio {rotulo}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - SDK varia o tipo de erro
             log(f"Gemini falhou {rotulo}: {type(e).__name__}: {e}")
     return []
 
@@ -217,7 +227,7 @@ def validar(linhas, usados, ja_tem):
 
 
 # ------------------------------------------------------------------ orquestra
-def atualizar(alvo=ALVO):
+def _atualizar(alvo=ALVO):
     chave_gemini = os.environ.get("GEMINI_KEY", "")
     chave_youtube = os.environ.get("YOUTUBE_API_KEY", "")
 
@@ -260,6 +270,40 @@ def atualizar(alvo=ALVO):
 
     log(f"temas.txt reescrito com {len(final)} linhas")
     return True
+
+
+def atualizar(alvo=ALVO):
+    """Atualiza no maximo uma vez por intervalo e impede escrita concorrente."""
+    if os.environ.get("TEMAS_FORCAR") != "1" and os.path.exists(MARCA_ATUALIZACAO):
+        idade_horas = (time.time() - os.path.getmtime(MARCA_ATUALIZACAO)) / 3600
+        if idade_horas < INTERVALO_HORAS:
+            log(f"pauta atualizada ha {idade_horas:.1f}h; pulando por enquanto")
+            return False
+
+    try:
+        fd = os.open(TRAVA, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.close(fd)
+    except FileExistsError:
+        try:
+            if time.time() - os.path.getmtime(TRAVA) > 30 * 60:
+                os.unlink(TRAVA)
+                return atualizar(alvo)
+        except FileNotFoundError:
+            return atualizar(alvo)
+        log("outro canal ja esta renovando a pauta; usando a lista atual")
+        return False
+
+    try:
+        resultado = _atualizar(alvo)
+        os.makedirs(os.path.dirname(MARCA_ATUALIZACAO), exist_ok=True)
+        with open(MARCA_ATUALIZACAO, "w", encoding="utf-8") as f:
+            f.write(str(int(time.time())))
+        return resultado
+    finally:
+        try:
+            os.unlink(TRAVA)
+        except FileNotFoundError:
+            pass
 
 
 if __name__ == "__main__":

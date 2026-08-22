@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-tiktok_post.py - envia video para a caixa de entrada (rascunho) do TikTok
-usando o proprio app de desenvolvedor do usuario. Sem servico pago.
+"""Publica direto ou envia rascunho para o TikTok Content Posting API.
 
 Fluxo (roda uma vez):
     1) python3 tiktok_post.py auth-url
@@ -11,14 +9,10 @@ Fluxo (roda uma vez):
        -> salva access_token e refresh_token em tiktok_tokens.json
 
 Uso diario:
-    python3 tiktok_post.py upload video.mp4
-    -> o video cai na sua caixa de entrada do TikTok. Voce abre o app,
-       adiciona audio/legenda e publica.
+    python3 tiktok_post.py upload video.mp4 "legenda"
 
-Por que rascunho e nao publicacao direta:
-    App sem auditoria da TikTok so consegue postar em modo privado.
-    A auditoria leva de 2 a 6 semanas e pode ser negada. O envio para a
-    caixa de entrada funciona SEM auditoria e e gratuito.
+TIKTOK_DIRECT_POST=1 usa publicacao direta e exige app aprovado para o escopo
+video.publish. Sem isso o modo padrao envia um rascunho para a caixa de entrada.
 """
 
 import base64
@@ -37,13 +31,17 @@ CLIENT_KEY = os.environ.get("TIKTOK_CLIENT_KEY", "")
 CLIENT_SECRET = os.environ.get("TIKTOK_CLIENT_SECRET", "")
 REDIRECT_URI = os.environ.get("TIKTOK_REDIRECT_URI", "")
 
-SCOPES = "user.info.basic,video.upload"
-TOKEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tiktok_tokens.json")
-PKCE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".tiktok_pkce")
+DIRECT_POST = os.environ.get("TIKTOK_DIRECT_POST", "0") == "1"
+SCOPES = "user.info.basic," + ("video.publish" if DIRECT_POST else "video.upload")
+BASE = os.path.dirname(os.path.abspath(__file__))
+TOKEN_FILE = os.environ.get("TIKTOK_TOKEN_FILE", os.path.join(BASE, "tiktok_tokens.json"))
+PKCE_FILE = os.environ.get("TIKTOK_PKCE_FILE", os.path.join(BASE, ".tiktok_pkce"))
 
 AUTH_URL = "https://www.tiktok.com/v2/auth/authorize/"
 TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/"
 INIT_URL = "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/"
+DIRECT_INIT_URL = "https://open.tiktokapis.com/v2/post/publish/video/init/"
+CREATOR_URL = "https://open.tiktokapis.com/v2/post/publish/creator_info/query/"
 STATUS_URL = "https://open.tiktokapis.com/v2/post/publish/status/fetch/"
 
 CHUNK = 10 * 1024 * 1024  # 10 MB
@@ -159,7 +157,24 @@ def _access_token():
 
 
 # ---------------------------------------------------------------- passo 3: upload
-def cmd_upload(path, tentar_refresh=True):
+def _creator_info(token):
+    r = requests.post(
+        CREATOR_URL,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=UTF-8",
+        },
+        json={},
+        timeout=30,
+    )
+    j = r.json()
+    err = (j.get("error") or {}).get("code", "")
+    if err and err != "ok":
+        sys.exit(f"creator_info falhou: {json.dumps(j, ensure_ascii=False)}")
+    return j.get("data") or {}
+
+
+def cmd_upload(path, legenda="", tentar_refresh=True):
     if not os.path.isfile(path):
         sys.exit(f"Arquivo nao encontrado: {path}")
 
@@ -175,20 +190,39 @@ def cmd_upload(path, tentar_refresh=True):
         total_chunks = size // chunk_size
 
     token = _access_token()
+    corpo = {
+        "source_info": {
+            "source": "FILE_UPLOAD",
+            "video_size": size,
+            "chunk_size": chunk_size,
+            "total_chunk_count": total_chunks,
+        }
+    }
+    init_url = INIT_URL
+    if DIRECT_POST:
+        info = _creator_info(token)
+        privacidade = os.environ.get("TIKTOK_PRIVACY", "PUBLIC_TO_EVERYONE")
+        opcoes = info.get("privacy_level_options") or []
+        if privacidade not in opcoes:
+            sys.exit(
+                f"Privacidade {privacidade} indisponivel nesta conta; opcoes={opcoes}"
+            )
+        corpo["post_info"] = {
+            "title": legenda[:2200],
+            "privacy_level": privacidade,
+            "disable_duet": bool(info.get("duet_disabled", False)),
+            "disable_comment": bool(info.get("comment_disabled", False)),
+            "disable_stitch": bool(info.get("stitch_disabled", False)),
+        }
+        init_url = DIRECT_INIT_URL
+
     r = requests.post(
-        INIT_URL,
+        init_url,
         headers={
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json; charset=UTF-8",
         },
-        json={
-            "source_info": {
-                "source": "FILE_UPLOAD",
-                "video_size": size,
-                "chunk_size": chunk_size,
-                "total_chunk_count": total_chunks,
-            }
-        },
+        json=corpo,
         timeout=60,
     )
     j = r.json()
@@ -196,7 +230,7 @@ def cmd_upload(path, tentar_refresh=True):
     if err and err != "ok":
         if err in ("access_token_invalid", "access_token_expired") and tentar_refresh:
             cmd_refresh()
-            return cmd_upload(path, tentar_refresh=False)
+            return cmd_upload(path, legenda=legenda, tentar_refresh=False)
         sys.exit(f"init falhou: {json.dumps(j, ensure_ascii=False)}")
 
     publish_id = j["data"]["publish_id"]
@@ -224,9 +258,12 @@ def cmd_upload(path, tentar_refresh=True):
             if pr.status_code not in (200, 201, 206):
                 sys.exit(f"upload do chunk falhou: {pr.text[:300]}")
 
-    print("\nEnviado. Abra o TikTok: o video esta na sua caixa de entrada,")
-    print("como rascunho, esperando voce publicar.")
+    if DIRECT_POST:
+        print("\nEnviado para publicacao direta no TikTok.")
+    else:
+        print("\nEnviado como rascunho para a caixa de entrada do TikTok.")
     cmd_status(publish_id)
+    return publish_id
 
 
 def cmd_status(publish_id):
@@ -243,7 +280,7 @@ def cmd_status(publish_id):
     try:
         j = r.json()
         print("status:", json.dumps(j.get("data", j), ensure_ascii=False))
-    except Exception:
+    except (ValueError, TypeError):
         print("status HTTP", r.status_code, r.text[:200])
 
 
@@ -260,7 +297,7 @@ def main():
     elif cmd == "refresh":
         cmd_refresh()
     elif cmd == "upload":
-        cmd_upload(sys.argv[2])
+        cmd_upload(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "")
     elif cmd == "status":
         cmd_status(sys.argv[2])
     else:

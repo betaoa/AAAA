@@ -1,0 +1,17 @@
+Coloque aqui filmagem QUE VOCE PODE USAR: gravada por voce, comprada com
+licenca, ou de banco livre que voce baixou.
+
+  midia/dinheiro/*.mp4     usada so no nicho dinheiro
+  midia/*.mp4              usada em qualquer nicho
+
+Havendo arquivo aqui, o bot usa ele e ignora o banco de imagem. A cena passa
+a ser sua, e some a cara de video montado com clipe generico.
+
+O QUE NAO PODE ENTRAR: corte de filme, serie, anime, desenho ou podcast de
+outra pessoa. O YouTube compara a impressao digital do audio e do video no
+momento do upload, pelo Content ID. Deteccao nao e risco, e rotina. Tres
+reclamacoes e o canal e encerrado, e a reincidencia marca a conta Google
+inteira, nao so o canal.
+
+Pack vendido dizendo "pode republicar" nao e licenca: quem vende nao tem
+direito sobre a obra para poder repassar.

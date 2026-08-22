@@ -6,7 +6,8 @@ Gratis. Sem servico intermediario. Publicacao publica e automatica.
 Por que o YouTube e a melhor aposta gratis:
     - nao precisa de auditoria pra postar no SEU proprio canal
     - publica publico de verdade, sem voce tocar
-    - limite: cota de 10.000 unidades/dia, upload custa 1.600 -> 6 videos/dia
+    - a cota atual de upload e um balde proprio; consulte o Console porque
+      o Google pode alterar o limite sem mudar este codigo
 
 Preparacao (uma vez, no seu PC):
     1) console.cloud.google.com -> cria projeto
@@ -27,13 +28,14 @@ Uso:
     python3 youtube_post.py quota
 """
 
-import json
 import os
 import sys
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 CLIENT_SECRET = os.path.join(BASE, "client_secret.json")
-TOKEN_FILE = os.path.join(BASE, "youtube_token.json")
+TOKEN_FILE = os.environ.get(
+    "YOUTUBE_TOKEN_FILE", os.path.join(BASE, "youtube_token.json")
+)
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
 
@@ -72,8 +74,8 @@ def cmd_auth():
 
 def _creds():
     _deps()
-    from google.oauth2.credentials import Credentials
     from google.auth.transport.requests import Request
+    from google.oauth2.credentials import Credentials
 
     if not os.path.exists(TOKEN_FILE):
         sys.exit("Sem token. Rode 'auth' primeiro, no seu PC.")
@@ -128,10 +130,11 @@ def cmd_upload(path, titulo, descricao="", tags="", privacidade="public"):
 
 
 def cmd_quota():
-    """A API nao expoe a cota. Isto so lembra a conta."""
-    print("Cota diaria padrao: 10.000 unidades.")
-    print("videos.insert custa 1.600 -> no maximo 6 uploads por dia.")
-    print("Painel: console.cloud.google.com -> APIs e servicos -> Cotas")
+    """A API nao expoe a cota restante; mostra onde conferir."""
+    print("Desde junho de 2026, videos.insert usa um balde proprio de uploads.")
+    print("O padrao documentado e 100 chamadas de upload por dia por projeto.")
+    print("Confirme no Console: APIs e servicos -> YouTube Data API -> Cotas.")
+    print("Projeto nao auditado pode ter upload forcado para privado.")
 
 
 def main():

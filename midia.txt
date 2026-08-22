@@ -1,0 +1,25 @@
+# Catalogo de filmagem hospedada FORA do repositorio.
+#
+# Uma linha por arquivo:
+#     nicho|URL_DIRETA_DO_ARQUIVO
+#     *|URL_DIRETA_DO_ARQUIVO        (serve para qualquer nicho)
+#
+# O bot sorteia ate 8 linhas do nicho da vez, baixa SO essas, monta o video
+# e apaga. Nenhum video fica no repositorio: ele nao engorda, o checkout
+# continua rapido, e o teto de 100 MB por arquivo do GitHub deixa de valer.
+#
+# A URL precisa devolver o ARQUIVO direto, nao uma pagina. Se devolver
+# pagina, o log avisa "a URL devolveu pagina, nao arquivo".
+#   Google Drive:  https://drive.usercontent.google.com/download?id=ID&export=download&confirm=t
+#                  (o ID esta no link de compartilhamento, entre /d/ e /view;
+#                   o arquivo precisa estar como "qualquer pessoa com o link")
+#   Dropbox:       troque o final ?dl=0 por ?dl=1
+#   Servidor seu:  a URL normal do arquivo
+#
+# Clipe acima de 120 MB e ignorado, para nao arrastar a execucao.
+#
+# Vale a mesma regra da pasta midia/: so material que voce pode usar.
+#
+# Exemplos - apague estas duas linhas quando puser as suas:
+# dinheiro|https://drive.usercontent.google.com/download?id=ABC123&export=download&confirm=t
+# *|https://meuservidor.com/videos/cidade-noite.mp4

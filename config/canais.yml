@@ -1,0 +1,199 @@
+versao: 2
+
+# Um perfil por nicho. Todos ja estao preparados para 5 videos por dia nas
+# tres redes. Ative somente depois de cadastrar os tres tokens daquele perfil.
+padroes:
+  fuso: America/Cuiaba
+  tolerancia_minutos: 35
+  intervalo_daemon_segundos: 30
+  max_paralelo: 3
+  modo: drive
+  plataformas: [youtube, instagram, tiktok]
+  horarios: ["09:05", "11:47", "14:05", "17:11", "20:35"]
+
+canais:
+  - id: memes
+    nome: Memes
+    ativo: false
+    nichos: [memes]
+    drive_url: https://drive.google.com/drive/folders/1KJ13VDCShpYVS0npYresjmvUsF4dZC96
+
+  - id: exercicios-academia
+    nome: Exercícios Academia
+    ativo: false
+    nichos: [exercícios academia]
+    drive_url: https://drive.google.com/drive/folders/17N3JomXThKqZ4tQBgTUvd4mwU5q8-VmP
+
+  - id: animais-selvagens
+    nome: Animais Selvagens
+    ativo: false
+    nichos: [animais selvagens]
+    drive_url: https://drive.google.com/drive/folders/1qfU7-o963Eglqn8MRsAXzPwxYWubgbAa
+
+  - id: pica-pau
+    nome: Pica-Pau
+    ativo: false
+    nichos: [pica-pau]
+    drive_url: https://drive.google.com/drive/folders/1UiVePy-u3VMkoi25vdRwCtZ08c1ahwVJ
+
+  - id: asmr
+    nome: Vídeos Virais ASMR
+    ativo: false
+    nichos: [asmr]
+    drive_url: https://drive.google.com/drive/folders/1kbJDAd9L30nwgAwbtO7mBqtwM-MJsLZj
+
+  - id: desenhos-biblicos
+    nome: Desenhos Bíblicos
+    ativo: false
+    nichos: [desenhos bíblicos]
+    drive_url: https://drive.google.com/drive/folders/1vtKARy3iKOl9_3vW7IhoEGuPHrX2Az1k
+
+  - id: religiosos
+    nome: Vídeos Religiosos
+    ativo: false
+    nichos: [religião]
+    drive_url: https://drive.google.com/drive/folders/1A2o2Zhn_vKUQKEx5S_MhABlAkQU4M6g4
+
+  - id: aviacao
+    nome: Aviação
+    ativo: false
+    nichos: [aviação]
+    drive_url: https://drive.google.com/drive/folders/1O2ma737mj7qcCAUCj1tFt0qQbs-Jbugs
+
+  - id: virais-gringos
+    nome: Vídeos Virais Gringos
+    ativo: false
+    nichos: [vídeos virais]
+    drive_url: https://drive.google.com/drive/folders/1CUi1OmBsjedutd9zcNss6C4w07aHN8Fz
+
+  - id: ganchos-virais
+    nome: Ganchos Virais
+    ativo: false
+    nichos: [ganchos virais]
+    drive_url: https://drive.google.com/drive/folders/1jbKtG9ylpYMW9RKFKAV5BXU-JjhHr9zU
+
+  - id: ruyter
+    nome: Ruyter
+    ativo: false
+    nichos: [ruyter]
+    drive_url: https://drive.google.com/drive/folders/1s8i88sYvKwaXcJheLMmraMxS4haoOuEP
+
+  - id: simpsons
+    nome: Os Simpsons
+    ativo: false
+    nichos: [os simpsons]
+    drive_url: https://drive.google.com/drive/folders/1MLXJHUAk3XsZnMxluiQAau8rh1mkdy2B
+
+  - id: animes
+    nome: Animes
+    ativo: false
+    nichos: [animes]
+    drive_url: https://drive.google.com/drive/folders/12zFFoXepCFfyQOBWNVTv_D-OdG4i1oB-
+
+  - id: filmes-series
+    nome: Filmes e Séries
+    ativo: false
+    nichos: [filmes e séries]
+    drive_url: https://drive.google.com/drive/folders/1PHgD-dOyOWsPtPwgB9YNyA4H_W7FgFOa
+
+  - id: lifestyle-milionario
+    nome: Lifestyle Milionário
+    ativo: false
+    nichos: [lifestyle milionário]
+    drive_url: https://drive.google.com/drive/folders/1KTAx3t9ZTyL2tafpkA6V7Ym9R6j2mRRM
+
+  - id: rick-morty
+    nome: Rick and Morty
+    ativo: false
+    nichos: [rick and morty]
+    drive_url: https://drive.google.com/drive/folders/1ocWf1UULas8mG9XAWPnphAUi75ikhkuR
+
+  - id: family-guy
+    nome: Family Guy
+    ativo: false
+    nichos: [family guy]
+    drive_url: https://drive.google.com/drive/folders/1BI-lquLLurvJkunrDyiA6Sp9_8REuz7W
+
+  - id: motivacionais
+    nome: Motivacionais
+    ativo: false
+    nichos: [motivação]
+    drive_url: https://drive.google.com/drive/folders/1QgZbuomCD4So8zbAtFgaBfBeEMOFMiLH
+
+  - id: marcal
+    nome: Marçal
+    ativo: false
+    nichos: [marçal]
+    drive_url: https://drive.google.com/drive/folders/1-OhRvMuywk_0jDkVkIOPf9gU1xWSGzJ3
+
+  - id: minimalistas
+    nome: Minimalistas
+    ativo: false
+    nichos: [minimalismo]
+    drive_url: https://drive.google.com/drive/folders/1-sKji1paAeNeTpjic3K87CxVwtJjDKPW
+
+  - id: todo-mundo-odeia-o-chris
+    nome: Todo Mundo Odeia o Chris
+    ativo: false
+    nichos: [todo mundo odeia o chris]
+    drive_url: https://drive.google.com/drive/folders/1EUZzE0F4V7E4tsrx-GGRyg9F04w3C6L0
+
+  - id: futebol
+    nome: Futebol
+    ativo: false
+    nichos: [futebol]
+    drive_url: https://drive.google.com/drive/folders/1RO4Wf9-8AdIUxhy-UtnGLDwt94JQnewy
+
+  - id: travel-vibes
+    nome: Travel Vibes
+    ativo: false
+    nichos: [viagem]
+    drive_url: https://drive.google.com/drive/folders/1kXJe0tFL_o-3ZT70fROAOKjuMceaYUTv
+
+  - id: podcast
+    nome: Podcast
+    ativo: false
+    nichos: [podcast]
+    drive_url: https://drive.google.com/drive/folders/1abmUHhdTIHMZla0mVwItffrOnm5Mkvv6
+
+  - id: acoes-policiais
+    nome: Ações Policiais
+    ativo: false
+    nichos: [ações policiais]
+    drive_url: https://drive.google.com/drive/folders/1tY8gTBeGhe_woZf7CVKrKf39FNMWz_pV
+
+  - id: consertos-marcenaria
+    nome: Consertos e Marcenaria
+    ativo: false
+    nichos: [consertos e marcenaria]
+    drive_url: https://drive.google.com/drive/folders/1Tza618_5mkt82KDgze7u9w_GMXyE7_CC
+
+  - id: ladroes-se-dando-mal
+    nome: Ladrões se Dando Mal
+    ativo: false
+    nichos: [ladrões se dando mal]
+    drive_url: https://drive.google.com/drive/folders/1KFPTdLHwoGxvlcTWruekU0_6SEfC7RVS
+
+  - id: espinhas
+    nome: Espinhas Satisfatórias
+    ativo: false
+    nichos: [espinhas satisfatórias]
+    drive_url: https://drive.google.com/drive/folders/1YBrM5II5XJ_pjXDtr6NZeKRO2jQNY6UP
+
+  - id: limpeza
+    nome: Limpeza
+    ativo: false
+    nichos: [limpeza]
+    drive_url: https://drive.google.com/drive/folders/1N-B-z018sre5x41Up6o4Y8nheI4S1rYi
+
+  - id: inteligencia-artificial
+    nome: Inteligência Artificial
+    ativo: false
+    nichos: [inteligência artificial]
+    drive_url: https://drive.google.com/drive/folders/1iBzHW4qpWNYpyVfchBVU0_RGMpsm0P-v
+
+  - id: carros-caminhoes
+    nome: Carros e Caminhões
+    ativo: false
+    nichos: [carros e caminhões]
+    drive_url: https://drive.google.com/drive/folders/14qmpmDLzhpa2DVnxjFzqGp_G3_2LGWmn
