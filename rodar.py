@@ -113,6 +113,8 @@ PLATAFORMAS = {
 }
 
 TESTE = "--teste" in sys.argv
+TEMA_MANUAL = os.environ.get("VIDEOBOT_TEMA", "").strip()
+TERMOS_MANUAIS = os.environ.get("VIDEOBOT_TERMOS", "").strip()
 VOZ = "pt-BR-ThalitaMultilingualNeural-Female"
 RITMO = "1.18"
 MAX_MB = 95  # limite pratico para nao esbarrar em limite de plataforma
@@ -467,10 +469,15 @@ def main():
         roteiro = ""
         log(f"Drive: {item_drive.caminho or item_drive.nome}")
     else:
-        atualizar_temas()
-        linha = proximo_tema()
-        partes = [p.strip() for p in linha.split("|")]
-        nicho, tema, termos = (partes + ["", "", ""])[:3]
+        if TEMA_MANUAL:
+            nicho = NICHOS_CANAL[0] if NICHOS_CANAL else (CANAL or "video")
+            tema, termos = TEMA_MANUAL, TERMOS_MANUAIS
+            log(f"Tema manual: {tema}")
+        else:
+            atualizar_temas()
+            linha = proximo_tema()
+            partes = [p.strip() for p in linha.split("|")]
+            nicho, tema, termos = (partes + ["", "", ""])[:3]
     tags = {"mar": "oceano,ciencia,curiosidades",
             "dinheiro": "financas,dinheiro,economia",
             "espiritual": "misterio,historia,curiosidades",
@@ -512,13 +519,14 @@ def main():
             import drive_source
 
             drive_source.marcar_usado(Path(DRIVE_USADOS), origem_drive_id)
-        else:
+        elif not TEMA_MANUAL:
             marcar_usado(tema)
 
     with open(HISTORICO, "a", encoding="utf-8") as f:
         f.write(json.dumps({
             "quando": agora(), "canal": CANAL or "unico",
             "nicho": nicho, "tema": tema,
+            "tema_manual": bool(TEMA_MANUAL),
             "arquivo": caminho,
             "drive_file_id": origem_drive_id or None,
             "plataformas_solicitadas": sorted(PLATAFORMAS),

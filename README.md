@@ -100,6 +100,17 @@ python videobot.py validar
 python videobot.py rodar --canal limpeza --teste
 ```
 
+Para gerar um Short sobre um assunto escolhido, use `--tema`. O tema vale
+apenas para esta execucao: mesmo em um canal configurado para Drive, o video
+sera gerado, sem mudar a configuracao, os arquivos do Drive ou a agenda.
+`--termos` permite indicar buscas visuais ao renderizador. O tema manual nao
+consome a lista automatica de `temas.txt`.
+
+```bash
+python videobot.py rodar --canal inteligencia-artificial --tema "Como funciona um buraco negro" --teste
+python videobot.py rodar --canal inteligencia-artificial --tema "Como funciona um buraco negro" --termos "black hole space galaxy stars" --teste
+```
+
 Confira o MP4 baixado em `dados/limpeza/downloads/`. Depois cadastre os tokens
 das três contas de Limpeza e mude somente esse perfil para:
 

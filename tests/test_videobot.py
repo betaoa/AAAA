@@ -2,10 +2,12 @@ import datetime as dt
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import yaml
 
 import drive_source
+import rodar
 import videobot
 
 CONFIG = """\
@@ -91,6 +93,48 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(set(social), {c.id for c in canais})
         handles = [x["handle"] for x in social.values()]
         self.assertEqual(len(handles), len(set(handles)))
+
+    def test_tema_manual_gera_sem_mudar_configuracao_drive(self):
+        canal = videobot.carregar_config().canais[0]
+        self.assertEqual(canal.modo, "drive")
+        with tempfile.TemporaryDirectory() as pasta:
+            with mock.patch.object(videobot, "DADOS", Path(pasta)):
+                with mock.patch.object(videobot, "ambiente_do_canal", return_value={
+                    "VIDEOBOT_MODO": "drive", "CANAL": canal.id,
+                }):
+                    with mock.patch.object(videobot.subprocess, "run") as run:
+                        run.return_value.returncode = 0
+                        codigo = videobot.executar(
+                            canal, teste=True, tema="Buraco negro",
+                            termos="black hole space",
+                        )
+        self.assertEqual(codigo, 0)
+        kwargs = run.call_args.kwargs
+        self.assertEqual(kwargs["env"]["VIDEOBOT_MODO"], "gerar")
+        self.assertEqual(kwargs["env"]["VIDEOBOT_TEMA"], "Buraco negro")
+        self.assertEqual(kwargs["env"]["VIDEOBOT_TERMOS"], "black hole space")
+        self.assertIn("--teste", run.call_args.args[0])
+        self.assertEqual(canal.modo, "drive")
+
+    def test_termos_sem_tema_sao_rejeitados(self):
+        self.assertEqual(videobot.main([
+            "rodar", "--canal", "memes", "--termos", "space",
+        ]), 2)
+
+    def test_tema_manual_pula_a_pauta_automatica(self):
+        with mock.patch.object(rodar, "MODO", "gerar"), \
+             mock.patch.object(rodar, "TESTE", True), \
+             mock.patch.object(rodar, "TEMA_MANUAL", "Buraco negro"), \
+             mock.patch.object(rodar, "TERMOS_MANUAIS", "black hole"), \
+             mock.patch.object(rodar, "NICHOS_CANAL", ["tecnologia"]), \
+             mock.patch.object(rodar, "atualizar_temas") as atualizar, \
+             mock.patch.object(rodar, "proximo_tema") as proximo, \
+             mock.patch.object(rodar, "escolher_fonte", return_value=("pexels", None)), \
+             mock.patch.object(rodar, "gerar", return_value=("teste.mp4", "")) as gerar:
+            rodar.main()
+        atualizar.assert_not_called()
+        proximo.assert_not_called()
+        self.assertEqual(gerar.call_args.args[:2], ("Buraco negro", "black hole"))
 
 
 if __name__ == "__main__":

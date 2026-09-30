@@ -325,7 +325,10 @@ def ambiente_do_canal(canal: Canal) -> dict[str, str]:
     return env
 
 
-def executar(canal: Canal, teste: bool = False, slot: str = "") -> int:
+def executar(
+    canal: Canal, teste: bool = False, slot: str = "",
+    tema: str = "", termos: str = "",
+) -> int:
     with trava(canal) as adquiriu:
         if not adquiriu:
             print(f"[{canal.id}] ja existe uma execucao em andamento; pulando.", flush=True)
@@ -348,15 +351,24 @@ def executar(canal: Canal, teste: bool = False, slot: str = "") -> int:
         comando = [sys.executable, str(BASE / "rodar.py")]
         if teste:
             comando.append("--teste")
+        env = ambiente_do_canal(canal)
+        env.pop("VIDEOBOT_TEMA", None)
+        env.pop("VIDEOBOT_TERMOS", None)
+        if tema:
+            # A pauta manual gera um Short nesta execucao, mesmo quando o
+            # canal normalmente publica arquivos do Drive.
+            env["VIDEOBOT_MODO"] = "gerar"
+            env["VIDEOBOT_TEMA"] = tema
+            env["VIDEOBOT_TERMOS"] = termos
         print(
-            f"[{canal.id}] iniciando | modo={canal.modo} "
+            f"[{canal.id}] iniciando | modo={env['VIDEOBOT_MODO']} "
             f"| nichos={','.join(canal.nichos) or 'todos'} "
             f"| plataformas={','.join(canal.plataformas)} | teste={teste}",
             flush=True,
         )
         try:
             resultado = subprocess.run(
-                comando, cwd=BASE, env=ambiente_do_canal(canal), check=False
+                comando, cwd=BASE, env=env, check=False
             )
             codigo = resultado.returncode
         except KeyboardInterrupt:
@@ -494,6 +506,8 @@ def parser() -> argparse.ArgumentParser:
     rodar = sub.add_parser("rodar", help="roda um canal agora")
     rodar.add_argument("--canal", required=True)
     rodar.add_argument("--teste", action="store_true")
+    rodar.add_argument("--tema", default="", help="tema manual para gerar um Short")
+    rodar.add_argument("--termos", default="", help="termos de video para o tema manual")
     rodar.add_argument("--slot", default="manual", help=argparse.SUPPRESS)
 
     dev = sub.add_parser("devidos", help="lista a matriz para o GitHub Actions")
@@ -516,6 +530,12 @@ def main(argv: list[str] | None = None) -> int:
             listar(config)
             return 0
         if args.comando == "rodar":
+            tema = args.tema.strip()
+            termos = args.termos.strip()
+            if args.tema and not tema:
+                raise ErroConfig("--tema nao pode ficar vazio.")
+            if termos and not tema:
+                raise ErroConfig("--termos exige --tema.")
             escolhido = obter_canal(config, args.canal)
             candidatos = [c for c in config.canais if c.ativo]
             if escolhido not in candidatos:
@@ -525,7 +545,8 @@ def main(argv: list[str] | None = None) -> int:
                 "1" if len(candidatos) == 1 else "0",
             )
             return executar(
-                escolhido, teste=args.teste, slot=args.slot
+                escolhido, teste=args.teste, slot=args.slot,
+                tema=tema, termos=termos,
             )
         if args.comando == "devidos":
             itens = canais_devidos(config, args.forcar)
