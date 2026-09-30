@@ -69,6 +69,18 @@ ESTILO_PADRAO = (
 )
 
 ESTILOS = {
+    "historinhas infantis de gatinhos": (
+        "Conte uma historinha curta, leve e original sobre um gatinho. "
+        "Comece com uma pequena surpresa, mostre o que o gatinho faz para "
+        "resolver o problema e termine com um desfecho alegre. Use frases "
+        "simples e apropriadas para todas as idades."
+    ),
+    "frutas feitas com inteligência artificial": (
+        "Conte uma historinha curta e original com frutas como personagens "
+        "ficticios. Comece com uma situacao engraçada, desenvolva uma acao "
+        "simples e termine com uma reviravolta leve. Nao apresente a ficcao "
+        "como fato real."
+    ),
     "dorama": (
         "Escreva como locutor que resume e explica, no tom de quem esta "
         "contando a historia para alguem que nunca viu. Apresente o "

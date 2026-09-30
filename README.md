@@ -1,17 +1,17 @@
 # Videobot v7 — Drive, 31 nichos e 3 redes
 
-Uma central controla todos os perfis. Cada nicho tem pasta própria no Google
-Drive, estado separado e agenda de **5 vídeos por dia** para YouTube,
-Instagram e TikTok.
+Uma central controla todos os perfis. Os 31 nichos originais têm pasta própria
+no Google Drive; os perfis Coisas Gerais e Conta foda usam `modo: gerar`.
+Cada perfil tem estado separado e uma agenda preparada de **5 vídeos por dia**.
 
 O projeto não cria contas sociais nem contorna login, verificação ou análise
-das plataformas. Os 31 perfis estão cadastrados com `ativo: false` para não
+das plataformas. Os 33 perfis estão cadastrados com `ativo: false` para não
 publicar na conta errada. Cada perfil deve ser ativado depois que os tokens da
 conta correspondente forem cadastrados.
 
 ## O que já está preparado
 
-- 31 nichos únicos em `config/canais.yml`;
+- 31 nichos originais do Drive e 2 perfis adicionais em `config/canais.yml`;
 - 5 horários diários no fuso de Cuiabá;
 - seleção de um MP4 ainda não usado na pasta correta do Drive;
 - publicação independente nas três plataformas;

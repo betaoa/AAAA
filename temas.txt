@@ -79,3 +79,13 @@ dorama|O truque de camera que faz novela barata parecer cara|camera slider,film 
 dorama|Por que os episodios terminam sempre no pior momento possivel|clock ticking,suspense dark,door closing,phone ringing,shocked face
 dorama|A regra de censura que muda o final das novelas na China|film editing,editing room,scissors film,screen monitor,control room
 dorama|Por que chines antigo aparece tanto em novela de fantasia|chinese temple,misty mountain,traditional robe,ancient scroll,bamboo forest
+# ------------------------------------------- HISTORINHAS INFANTIS DE GATINHOS
+historinhas infantis de gatinhos|O gatinho que perdeu seu brinquedo favorito|kitten playing,cat toy,playful cat,home pet
+historinhas infantis de gatinhos|O gatinho que ajudou um amigo na chuva|kitten,rain window,cat friends,cozy home
+historinhas infantis de gatinhos|O gatinho curioso e a caixa misteriosa|kitten cardboard box,curious cat,pet playing
+historinhas infantis de gatinhos|O gatinho que aprendeu a dividir|kitten playing,cat friends,pet toys
+# --------------------------------------- FRUTAS FEITAS COM INTELIGENCIA ARTIFICIAL
+frutas feitas com inteligência artificial|A banana que queria ser uma estrela|banana fruit,colorful fruit,kitchen counter
+frutas feitas com inteligência artificial|A maçã e o mistério da cesta vazia|apple fruit,fruit basket,kitchen counter
+frutas feitas com inteligência artificial|O morango que organizou uma festa|strawberry fruit,colorful fruit,party table
+frutas feitas com inteligência artificial|A laranja que inventou uma dança|orange fruit,colorful fruit,fruit market

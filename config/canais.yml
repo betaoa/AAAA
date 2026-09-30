@@ -18,6 +18,20 @@ canais:
     nichos: [memes]
     drive_url: https://drive.google.com/drive/folders/1KJ13VDCShpYVS0npYresjmvUsF4dZC96
 
+  - id: coisas-gerais
+    nome: Coisas Gerais
+    ativo: false
+    modo: gerar
+    plataformas: [youtube]
+    nichos: [historinhas infantis de gatinhos]
+
+  - id: conta-foda
+    nome: Conta foda
+    ativo: false
+    modo: gerar
+    plataformas: [youtube]
+    nichos: [frutas feitas com inteligência artificial]
+
   - id: exercicios-academia
     nome: Exercícios Academia
     ativo: false
