@@ -6,7 +6,7 @@ padroes:
 contas:
   memes: {nome: "Beto Memes", handle: betomemesoficial}
   coisas-gerais: {nome: "Coisas Gerais", handle: sabiadissoshorts}
-  conta-foda: {nome: "Conta foda", handle: contafodaprakrl}
+  conta-foda: {nome: "Conta foda", handle: contafodaprakrl, tiktok_handle: lelouchvivrit}
   exercicios-academia: {nome: "Beto Academia", handle: betoacademia}
   animais-selvagens: {nome: "Beto Animais", handle: betoanimais}
   pica-pau: {nome: "Beto Pica-Pau", handle: betopicapau}
