@@ -15,7 +15,6 @@ TIKTOK_DIRECT_POST=1 usa publicacao direta e exige app aprovado para o escopo
 video.publish. Sem isso o modo padrao envia um rascunho para a caixa de entrada.
 """
 
-import base64
 import hashlib
 import json
 import os
@@ -83,9 +82,7 @@ def cmd_auth_url(use_pkce=True):
     }
     if use_pkce:
         verifier = secrets.token_urlsafe(64)[:96]
-        challenge = base64.urlsafe_b64encode(
-            hashlib.sha256(verifier.encode()).digest()
-        ).decode().rstrip("=")
+        challenge = hashlib.sha256(verifier.encode()).hexdigest()
         params["code_challenge"] = challenge
         params["code_challenge_method"] = "S256"
         _save(PKCE_FILE, {"verifier": verifier, "state": state})
