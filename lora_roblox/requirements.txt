@@ -1,0 +1,4 @@
+# Instale o PyTorch ANTES, conforme sua plataforma (ver README.md, secao Hardware AMD).
+transformers>=4.46
+peft>=0.13
+accelerate>=1.0
